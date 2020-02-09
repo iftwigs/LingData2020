@@ -24,8 +24,20 @@ hist(x, col="tomato", main="")
 ```
 
 a. What is the proportion of values in the sample that exceed $5$? Explain your answer.
+   
+   1+10+4+4+1=20
+   5/20=0.25 
+   
 b. Indicate the interval where the median of this sample can lie. Explain your answer.
+   
+   between -5 and 0 because the median is what we can call the "centre" of the sample -- and
+   if we write down all the sample's elements, place them into their intervals and start
+   going from the sides to the centre we'll see that the middle of the sample lies between -5 and 0.
+   
 c. How the histogram will change if we add an element $7$ to the sample? Explain your answer.
+   
+   the fourth bar will become higher by one point because it signifies elements which fall
+   between 5 and 7.
 
 ### Problem 2
 
@@ -44,6 +56,9 @@ hist(sample2, col="lightgreen", xlim=c(100, 900))
 
 Which of the samples has a larger variance? Explain your answer.
 
+the first histogram has a larger variance because informally speaking, variance is how much
+the values can differ from the mean, and it is visible that the first histogram's leftmost and rightmost points are farther from the mean than in the second one.
+
 \newpage
 
 b. Look at the histograms of two samples.
@@ -58,6 +73,11 @@ hist(sample2, col="lightgreen", xlim=c(5, 15))
 ```
 
 Which of the samples has a larger variance? Explain your answer.
+
+the first histogram has a larger variance for the same reasons mentioned above -- the
+numbers on the Ox allow us to see that in the first histogram the values differ from the
+mean more than in the second one.
+
 
 ## Part 2
 
@@ -76,34 +96,39 @@ hist(mistakes, breaks=60, col= "deepskyblue", ylim=c(0, 40))
 ### 3.1
 Is it true that $50$% students made more than $35$ mistakes?
 ```
-
+no.
 ```
 Explain your answer below:
 
+more elements lie between 0 mark and 35 mark.
 
 ### 3.2
 Is it true that most students made no more than $10$ mistakes?
 ```
-
+no.
 ```
 Explain your answer below:
 
+it is false because the highest bar (= the most students) is somewhat close to the mark 20 on Ox.
 
 ### 3.3
 Which of the following values is closer to be the median of `mistakes`: $10$, $20$, $30$, $40$?
 ```
-
+20
 ```
 Explain your answer below:
 
+20 is closer to be the median of mistakes because it is visible that the biggest part of mistakes lies between 10 and 20, somewhat closer to 20.
 
 ### Problem 4. Exact binomial test
 
 The null hypothesis is that $p=0$ (i.e. no success is possible). In a dataset, there is only one success out of 1 000 000 observations. Will you reject the null hypothesis? 
 ```
-
+no
 ```
 Explain your answer below:
+
+i will not reject the null hypothesis because 0.000001 is infinitely small and thus statistically insignificant.
 
 
 ## Part 3
@@ -119,19 +144,19 @@ $44$, $50$, $42$, $64$, $66$, $42$, $72$, $56$, $72$, $54$, $46$, $48$, $48$, $5
 ### 5.1
 Arrange them in a vector and call it `age`. 
 ```{r}
-
+age <- c(44, 50, 42, 64, 66, 42, 72, 56, 72, 54, 46, 48, 48, 52, 50, 66, 84)
 ```
 
 ### 5.2
 Examine the type of `age` variable (numeric, character, etc).
 ```
-
+class(age)
 ```
 
 ### 5.3
 Plot the histogram of the vector `age` with $5$ bins. Change its color to any you want. (Use either R basic or ggplot2 style for plotting.)
 ```{r}
-
+hist(age, col='red', breaks=5)
 ```
 
 
@@ -143,13 +168,13 @@ Here is a series of words:
 ### 6.1
 Arrange elements above in a vector and call it `words` 
 ```{r}
-
+words <- c('pie', 'bar', 'bar', 'pie', 'pie', 'bar', 'bar', 'chart')
 ```
 
 ### 6.2
 Calculate the relative frequences of values in `words` measured in percent.
 ```{r}
-
+prop.table(table(words)) * 100
 ```
 
 ## Problem 7. Position of verbs in verses
@@ -172,29 +197,35 @@ Let's assume that the probability for verbs to be used in any position ('in gene
 
 What is your null hypothesis $H_0$ and what is the alternative hypothesis $H_1$?
 ```
-H0: 
-H1: 
+H0: p(UPoS=='VERB') = 0.17
+H1: p(UPoS=='VERB) != 0.17
 ```
 
 ### 7.2
 
 Read the dataset [“The last words in verses”](https://raw.githubusercontent.com/LingData2019/LingData2020/master/data/poetry_last_in_lines.csv). Filter out the relevant observations from 1920s, calculate the number of verbs observed in the sample, and the sample size. 
 ```{r}
-
+df <- read_tsv('https://raw.githubusercontent.com/LingData2019/LingData2020/master/data/poetry_last_in_lines.csv')
+rel <- df[df$Decade=='1920s',] %>%
+  select(-Decade)
+rel <- df[df$Decade=='1920s',] %>%
+  select(-Decade)
+rel_examples <- nrow(rel) 
+verbs <- nrow(rel[rel$UPoS=='VERB',])
 ```
 
 ### 7.3
 
 Use an exact binomial test to calculate p-value. 
 ```{r}
-
+binom.test(verbs, rel_examples, p=0.17)
 ```
 
 ### 7.4 Interpret results
 
 Give your interpretation of obtained p-value. Answer the initial question: Can we decide that in verses written in 1920s, verbs are used in the rhyming posision more often or less often than expected?
 ```
-
+i've got p-value=0.2297 which is not enough to reject the null hypothesis, so we cannot say that the verbs in verses written in 1920s are used differently in the rhyming position than in general.
 ```
 
 ### 7.5 
@@ -219,19 +250,21 @@ t.test(sample, mu = 7725) # mu is a population mean
 ### 8.1
 Write down a two-tailed alternative hypothesis.
 ```
-H1: 
+H1: vowel.dur(shg05) != 73
 ```
 
 ### 8.2
 Perform a one-sample t-test. 
 ```{r}
-
+df <- read_csv('https://raw.githubusercontent.com/LingData2019/LingData2020/master/data/icelandic.csv')
+shg05 <- df[df$speaker=='shg05',]
+t.test(shg05$vowel.dur, mu=73)
 ```
 
 ### 8.3
 Interpret results. 
 ```
-
+i've got p-value=0.05172 which is not small enough to tell with 95% confidence that the initial assumption is correct.
 ```
 
 #### Supplementary reading
